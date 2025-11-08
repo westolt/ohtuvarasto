@@ -30,4 +30,4 @@ class Varasto:
     def __str__(self):
         saldo = int(self.saldo)
         paljonko_mahtuu = int(self.paljonko_mahtuu())
-        return f"saldo = {saldo}, vielä tilaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa {paljonko_mahtuu}"
+        return f"saldo = {saldo}, vielä tila {paljonko_mahtuu}"
