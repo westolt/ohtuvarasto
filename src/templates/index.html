@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Ohtuvarasto - Etusivu{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Varastot</h2>
+
+    {% if warehouses %}
+        <div class="warehouse-grid">
+            {% for warehouse_id, warehouse in warehouses.items() %}
+                <div class="warehouse-card">
+                    <h3>{{ warehouse.name }}</h3>
+                    <div class="warehouse-info">
+                        <p><strong>Saldo:</strong> {{ warehouse.varasto.saldo|round(1) }}</p>
+                        <p><strong>Tilavuus:</strong> {{ warehouse.varasto.tilavuus|round(1) }}</p>
+                        <p><strong>Tilaa jäljellä:</strong> {{ warehouse.varasto.paljonko_mahtuu()|round(1) }}</p>
+
+                        {% set fill_percentage = (warehouse.varasto.saldo / warehouse.varasto.tilavuus * 100) if warehouse.varasto.tilavuus > 0 else 0 %}
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ fill_percentage }}%"></div>
+                        </div>
+                        <p><small>{{ fill_percentage|round(1) }}% täynnä</small></p>
+                    </div>
+                    <div class="warehouse-actions">
+                        <a href="{{ url_for('view_warehouse', warehouse_id=warehouse_id) }}" class="btn">Näytä</a>
+                        <a href="{{ url_for('edit_warehouse', warehouse_id=warehouse_id) }}" class="btn btn-secondary">Muokkaa</a>
+                        <form class="inline-form" method="POST" action="{{ url_for('delete_warehouse', warehouse_id=warehouse_id) }}" onsubmit="return confirm('Haluatko varmasti poistaa tämän varaston?');">
+                            <button type="submit" class="btn btn-danger">Poista</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>Ei varastoja. Luo ensimmäinen varasto!</p>
+            <a href="{{ url_for('create_warehouse') }}" class="btn btn-success">Luo uusi varasto</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
