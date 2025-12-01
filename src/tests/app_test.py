@@ -144,3 +144,26 @@ class TestFlaskApp(unittest.TestCase):
         }, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         self.assertIn('Ei tarpeeksi tavaraa'.encode('utf-8'), response.data)
+
+    def test_create_warehouse_exceeds_max_capacity(self):
+        response = self.app.post('/warehouse/create', data={
+            'name': 'Too Large',
+            'capacity': '2000000',
+            'initial_balance': '0'
+        }, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('1,000,000'.encode('utf-8'), response.data)
+        self.assertEqual(len(warehouses), 0)
+
+    def test_edit_warehouse_exceeds_max_capacity(self):
+        self.app.post('/warehouse/create', data={
+            'name': 'Edit Test',
+            'capacity': '100',
+            'initial_balance': '0'
+        })
+        response = self.app.post('/warehouse/1/edit', data={
+            'name': 'Edit Test',
+            'capacity': '2000000'
+        }, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('1,000,000'.encode('utf-8'), response.data)

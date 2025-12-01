@@ -26,12 +26,17 @@ def parse_create_form():
     return name, capacity, initial_balance
 
 
+MAX_CAPACITY = 1000000
+
+
 def validate_warehouse_form(name, capacity):
     """Validate warehouse form data. Returns error message or None."""
     if not name:
         return 'Nimi on pakollinen.'
     if capacity <= 0:
         return 'Tilavuuden on oltava positiivinen.'
+    if capacity > MAX_CAPACITY:
+        return f'Tilavuus saa olla enintään {MAX_CAPACITY:,}.'
     return None
 
 
